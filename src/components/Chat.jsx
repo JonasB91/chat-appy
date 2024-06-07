@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 
 const Chat = () => {
-    const [message, setMessage] = useState([]);
+    const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     //Setting state handling för messages
 
@@ -22,7 +22,7 @@ const Chat = () => {
             }
         });
         const data = await response.json()
-        setMessage(data)
+        setMessages(data)
     }
 
     //Message function
@@ -39,7 +39,7 @@ const Chat = () => {
         });
         const data = await response.json();
         if (response.ok) {
-            setMessage([...message, data])
+            setMessages([...messages, data])
             setNewMessage('');
         }
     }
@@ -53,13 +53,13 @@ const Chat = () => {
                     'Authorization': `Bearer ${token}`
                 }
             })
-            setMessage(message.filter(msg => msg.id !== id))
+            setMessages(messages.filter(msg => msg.id !== id))
         };
 
   return (
    <div className='chat-container'>
-    <div className='message'>
-        {message.map(msg => (
+    <div className='messages'>
+        {messages.map(msg => (
          <div key={msg.id} className={`message ${msg.userId === user.id ? 'own' : ''}`}>   
             <p>{msg.content}</p>
             {msg.userId === user.id && (

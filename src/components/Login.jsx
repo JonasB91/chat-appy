@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const navigate = useNavigate()
 
     //Login function and storing token and user in localstorage
     const LoginUser = async (e) => {
@@ -23,7 +24,7 @@ const Login = () => {
             localStorage.setItem('user', JSON.stringify(data.user));
             setMessage('Login was Successful');
             setTimeout(() => {
-                window.location.href = '/chat';
+                navigate('/chat');
             }, 2500);
         } else {
             setMessage(data.message || 'invalid credentials : error')
