@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
-    //Login function and storing token and user in localstorage
+    // Login function and storing token and user in localstorage
     const LoginUser = async (e) => {
         e.preventDefault();
         const response = await fetch('https://chatify-api.up.railway.app/auth/token', {
@@ -27,19 +27,34 @@ const Login = () => {
                 navigate('/chat');
             }, 2500);
         } else {
-            setMessage(data.message || 'invalid credentials : error')
+            setMessage(data.message || 'Invalid credentials : error');
         }
     };
 
+    return (
+        <div>
+            <h2>Login</h2>
+            <form onSubmit={LoginUser}>
+                <input 
+                    type="text" 
+                    value={username} 
+                    onChange={(e) => setUsername(e.target.value)} 
+                    placeholder='Username' 
+                    required
+                />
+                <input 
+                    type="password" 
+                    value={password} 
+                    onChange={(e) => setPassword(e.target.value)} 
+                    placeholder='Password' 
+                    required
+                />
+                <button type='submit'>Login</button>
+                {message && <p>{message}</p>}
+            </form>
+            <p>Don't have an account? <Link to="/register">Register here</Link></p>
+        </div>
+    );
+};
 
-  return (
-    <form onSubmit={LoginUser}>
-        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder='Username' />
-        <input type="text" value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Password' />
-        <button type='submit'>Login</button>
-        {message && <p>{message}</p>}
-    </form>
-  )
-}
-
-export default Login
+export default Login;
