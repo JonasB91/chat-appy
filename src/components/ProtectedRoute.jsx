@@ -1,15 +1,15 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
+// src/components/ProtectedRoute.jsx
+import React, { useContext } from "react";
+import { Navigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthProvider.jsx"; // Uppdatera denna rad
 
 const ProtectedRoute = ({ children }) => {
-    const isLoggedIn = !!localStorage.getItem('token');
+    const { authState } = useContext(AuthContext);
 
-    // Om användaren inte är inloggad, omdirigera till inloggningssidan
-    if (!isLoggedIn) {
+    if (!authState.isAuthenticated) {
         return <Navigate to="/login" />;
     }
 
-    // Om användaren är inloggad, rendera barnkomponenter
     return children;
 };
 
