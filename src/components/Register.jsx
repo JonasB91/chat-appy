@@ -1,5 +1,3 @@
-// src/components/Register.jsx
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthProvider';
@@ -8,13 +6,14 @@ const Register = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [avatar, setAvatar] = useState(''); // Nytt fält för avatar
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
     const { fetchCsrfToken } = useAuth();
 
     // Validate input fields
     const validateInputs = () => {
-        if (username.trim() === '' || email.trim() === '' || password.trim() === '') {
+        if (username.trim() === '' || email.trim() === '' || password.trim() === '' || avatar.trim() === '') {
             setMessage('All fields are required!');
             return false;
         }
@@ -36,10 +35,8 @@ const Register = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'CSRF-Token': csrfToken
                 },
-                body: JSON.stringify({ username, email, password }),
-                credentials: 'include'
+                body: JSON.stringify({ username, email, password, avatar, csrfToken }),
             });
             const data = await response.json();
             if (response.ok) {
@@ -77,6 +74,13 @@ const Register = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder='Password'
+                required
+            />
+            <input
+                type='text'
+                value={avatar}
+                onChange={(e) => setAvatar(e.target.value)}
+                placeholder='Avatar URL'
                 required
             />
             <button type='submit'>Register</button>

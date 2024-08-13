@@ -6,14 +6,14 @@ const Chat = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = null //JSON.parse(sessionStorage.getItem('user'));
 
     useEffect(() => {
         fetchMessages();
     }, []);
 
     const fetchMessages = async () => {
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         try {
             const response = await fetch('https://chatify-api.up.railway.app/messages', {
                 headers: {

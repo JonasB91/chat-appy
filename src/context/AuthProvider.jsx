@@ -8,7 +8,7 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
     const [authState, setAuthState] = useState({
         isAuthenticated: !!sessionStorage.getItem('token'),
-        user: JSON.parse(sessionStorage.getItem('user')) || null,
+        user: null,
     });
     const navigate = useNavigate();
 
@@ -18,23 +18,24 @@ export const AuthProvider = ({ children }) => {
         if (token && user) {
             setAuthState({
                 isAuthenticated: true,
-                user: JSON.parse(user)
+                user: null
             });
         }
     }, []);
 
     const login = async (username, password) => {
         try {
+            const csrfToken = await fetchCsrfToken();
             const response = await fetch('https://chatify-api.up.railway.app/auth/token', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password }),
-                credentials: 'include'
+                body: JSON.stringify({ username, password, csrfToken })
             });
             const data = await response.json();
             if (response.ok) {
                 sessionStorage.setItem('token', data.token);
-                sessionStorage.setItem('user', JSON.stringify(data.user));
+                const decodedJwt = JSON.parse(atob(data.token.split('.')[1]));
+                sessionStorage.setItem('user', JSON.stringify(decodedJwt));
                 setAuthState({ isAuthenticated: true, user: data.user });
                 navigate('/chat');
             } else {
@@ -57,16 +58,17 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await fetch('https://chatify-api.up.railway.app/csrf', {
                 method: 'PATCH',
-                //credentials: 'include'
             });
             if (!response.ok) throw new Error('Failed to fetch CSRF Token!');
             const data = await response.json();
+            console.log('CSRF Token:', data.csrfToken);
             return data.csrfToken;
         } catch (error) {
             console.error('CSRF Token fetch error:', error);
             throw error;
         }
     };
+    
 
     return (
         <AuthContext.Provider value={{ authState, login, logout, fetchCsrfToken }}>
