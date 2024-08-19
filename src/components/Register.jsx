@@ -41,7 +41,7 @@ const Register = () => {
             const data = await response.json();
             console.log('CSRF Token:', csrfToken);
             if (response.ok) {
-                setMessage('Registration is successful!');
+                setMessage('Registration is successful! - Redirecting to Login.....');
                 setTimeout(() => {
                     navigate('/login');
                 }, 2500);
@@ -49,7 +49,7 @@ const Register = () => {
                 if (response.status === 409) {
                     setMessage('User already exists!')
                 }
-                setMessage(data.message || 'Registration error/failed');
+                setMessage(data.message || 'Registration failed - Please try another username and password!');
             }
         } catch (error) {
             setMessage('Registration Failed!');
