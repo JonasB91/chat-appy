@@ -6,7 +6,7 @@ const Register = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [avatar, setAvatar] = useState(''); // Nytt fält för avatar
+    const [avatar, setAvatar] = useState('');
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
     const { fetchCsrfToken } = useAuth();
@@ -39,16 +39,20 @@ const Register = () => {
                 body: JSON.stringify({ username, email, password, avatar, csrfToken }),
             });
             const data = await response.json();
+            console.log('CSRF Token:', csrfToken);
             if (response.ok) {
-                setMessage('Registration is successful');
+                setMessage('Registration is successful!');
                 setTimeout(() => {
                     navigate('/login');
                 }, 2500);
             } else {
+                if (response.status === 409) {
+                    setMessage('User already exists!')
+                }
                 setMessage(data.message || 'Registration error/failed');
             }
         } catch (error) {
-            setMessage('Registration Failed!... Please try again!');
+            setMessage('Registration Failed!');
         }
     };
 

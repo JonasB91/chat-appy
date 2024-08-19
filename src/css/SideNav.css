@@ -1,0 +1,60 @@
+.sidenav {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: -250px; 
+    background-color: #111;
+    padding-top: 20px;
+    transition: left 0.3s ease; 
+    z-index: 1;
+}
+
+/* När sidenaven är öppen */
+.sidenav.open {
+    left: 0; 
+}
+
+.sidenav .nav-links {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.logout {
+    margin-top: auto; 
+    padding: 20px;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 18px;
+    color: white;
+    background-color: #f44336;
+    border: none;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background-color: #e53935;
+}
+
+.toggle-btn {
+    position: fixed;
+    top: 20px;
+    left: 10px;
+    z-index: 2;
+    background-color: #111;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.toggle-btn:hover {
+    background-color: #444;
+}

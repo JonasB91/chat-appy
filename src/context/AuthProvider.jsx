@@ -18,34 +18,42 @@ export const AuthProvider = ({ children }) => {
         if (token && user) {
             setAuthState({
                 isAuthenticated: true,
-                user: null
+                user: JSON.parse(user)
             });
         }
     }, []);
-
+    
     const login = async (username, password) => {
         try {
             const csrfToken = await fetchCsrfToken();
             const response = await fetch('https://chatify-api.up.railway.app/auth/token', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    
+                },
                 body: JSON.stringify({ username, password, csrfToken })
             });
             const data = await response.json();
             if (response.ok) {
-                sessionStorage.setItem('token', data.token);
                 const decodedJwt = JSON.parse(atob(data.token.split('.')[1]));
+                sessionStorage.setItem('token', data.token);
                 sessionStorage.setItem('user', JSON.stringify(decodedJwt));
-                setAuthState({ isAuthenticated: true, user: data.user });
+    
+                setAuthState({
+                    isAuthenticated: true,
+                    user: decodedJwt 
+                });
                 navigate('/chat');
             } else {
-                throw new Error(data.message || 'Login failed');
+                alert(data.message || 'Login failed');
             }
         } catch (error) {
             console.error('Login error:', error);
-            alert('Login failed. Please try again.');
+            alert('Invalid credentials');
         }
     };
+    
 
     const logout = () => {
         sessionStorage.removeItem('token');
