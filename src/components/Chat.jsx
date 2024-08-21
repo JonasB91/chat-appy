@@ -1,12 +1,32 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthProvider'; 
-import '../css/Chat.css'; // Antag att du har lagrat CSS:en i Chat.css
+import '../css/Chat.css';
 
 const Chat = () => {
     const { authState, fetchCsrfToken } = useContext(AuthContext);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
-    const [selectedMessageId, setSelectedMessageId] = useState(null);
+
+    const [fakeChat] = useState([
+        {
+            "text": "Tja tja, hur mår du?",
+            "avatar": "https://i.pravatar.cc/100?img=14",
+            "username": "Johnny",
+            "conversationId": null
+        },
+        {
+            "text": "Hallå!! Svara då!!",
+            "avatar": "https://i.pravatar.cc/100?img=14",
+            "username": "Johnny",
+            "conversationId": null
+        },
+        {
+            "text": "Sover du eller?! 😴",
+            "avatar": "https://i.pravatar.cc/100?img=14",
+            "username": "Johnny",
+            "conversationId": null
+        }
+    ]);
 
     useEffect(() => {
         if (authState.isAuthenticated) {
@@ -46,11 +66,15 @@ const Chat = () => {
                     'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
                     'CSRF-Token': csrfToken
                 },
-                body: JSON.stringify({ text: sanitizedMessage })
+                body: JSON.stringify({
+                    text: sanitizedMessage,
+                    username: authState.user.username,
+                    avatar: authState.user.avatar // Använd alltid avataren från authState
+                })
             });
             if (!response.ok) throw new Error('Failed to send message');
             const newMsg = await response.json();
-            fetchMessages(); 
+            fetchMessages(); // Uppdatera meddelandelistan direkt efter att meddelandet skickats
             setNewMessage('');
         } catch (error) {
             console.error('Error sending message:', error);
@@ -73,25 +97,33 @@ const Chat = () => {
         }
     };
 
-    const handleSelectMessage = (id) => {
-        setSelectedMessageId(id === selectedMessageId ? null : id);
-    };
-
     return (
         <div className='chat-container'>
             <div className='messages'>
+                {fakeChat.map((msg, index) => (
+                    <div key={index} className="message other">
+                        <img src={msg.avatar} alt="avatar" className="avatar" />
+                        <div className="message-content">
+                            <p className="username">{msg.username}</p>
+                            <p>{msg.text}</p>
+                        </div>
+                    </div>
+                ))}
                 {messages.map((msg, index) => {
                     const isOwnMessage = msg.userId === authState.user.id;
                     return (
                         <div
                             key={msg.id || index}
                             className={`message ${isOwnMessage ? 'own' : 'other'}`}
-                            onClick={() => handleSelectMessage(msg.id)}
                         >
-                            <p>{msg.text}</p>
-                            {isOwnMessage && selectedMessageId === msg.id && (
-                                <button onClick={() => deleteMessage(msg.id)} className="delete-btn">Delete</button>
-                            )}
+                            <img src={isOwnMessage ? authState.user.avatar : msg.avatar} alt="avatar" className="avatar" />
+                            <div className="message-content">
+                                <p className="username">{isOwnMessage ? authState.user.username : msg.username}</p>
+                                <p>{msg.text}</p>
+                                {isOwnMessage && (
+                                    <button onClick={() => deleteMessage(msg.id)} className="delete-btn">Delete</button>
+                                )}
+                            </div>
                         </div>
                     );
                 })}

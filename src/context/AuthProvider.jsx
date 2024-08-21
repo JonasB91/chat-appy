@@ -22,7 +22,29 @@ export const AuthProvider = ({ children }) => {
             });
         }
     }, []);
-    
+
+    const fetchUserData = async (userId, token) => {
+        try {
+            const response = await fetch(`https://chatify-api.up.railway.app/users/${userId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const data = await response.json();
+            if (response.ok) {
+                sessionStorage.setItem('user', JSON.stringify(data));
+                setAuthState({
+                    isAuthenticated: true,
+                    user: data
+                });
+            } else {
+                console.error('Failed to fetch user data:', data.message);
+            }
+        } catch (error) {
+            console.error('Failed to fetch user data:', error);
+        }
+    };
+
     const login = async (username, password) => {
         try {
             const csrfToken = await fetchCsrfToken();
@@ -30,20 +52,18 @@ export const AuthProvider = ({ children }) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    
                 },
                 body: JSON.stringify({ username, password, csrfToken })
             });
             const data = await response.json();
             if (response.ok) {
                 const decodedJwt = JSON.parse(atob(data.token.split('.')[1]));
+                const userId = decodedJwt.userId; // Här antar vi att userId finns i JWT
                 sessionStorage.setItem('token', data.token);
-                sessionStorage.setItem('user', JSON.stringify(decodedJwt));
-    
-                setAuthState({
-                    isAuthenticated: true,
-                    user: decodedJwt 
-                });
+                
+                // Hämta fullständig användarinformation
+                await fetchUserData(userId, data.token);
+                
                 navigate('/chat');
             } else {
                 alert(data.message || 'Login failed');
@@ -53,7 +73,6 @@ export const AuthProvider = ({ children }) => {
             alert('Invalid credentials');
         }
     };
-    
 
     const logout = () => {
         sessionStorage.removeItem('token');
@@ -69,14 +88,12 @@ export const AuthProvider = ({ children }) => {
             });
             if (!response.ok) throw new Error('Failed to fetch CSRF Token!');
             const data = await response.json();
-            console.log('CSRF Token:', data.csrfToken);
             return data.csrfToken;
         } catch (error) {
             console.error('CSRF Token fetch error:', error);
             throw error;
         }
     };
-    
 
     return (
         <AuthContext.Provider value={{ authState, login, logout, fetchCsrfToken }}>

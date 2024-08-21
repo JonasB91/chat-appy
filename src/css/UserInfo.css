@@ -1,0 +1,26 @@
+/* UserInfo.css */
+
+.user-info {
+    position: absolute; /* Placera elementet relativt till dess närmaste positionerade förfader */
+    top: 10px; /* Placera det nära toppen av sidan */
+    right: 10px; /* Placera det nära högra kanten */
+    display: flex;
+    align-items: center;
+    background-color: transparent; /* Ta bort bakgrundsfärgen */
+    padding: 0; /* Ta bort padding */
+    margin: 0; /* Ta bort margin */
+}
+
+.user-avatar {
+    width: 50px; /* Gör avatarbilden större */
+    height: 50px; /* Gör avatarbilden större */
+    border-radius: 50%; /* Gör bilden rund */
+    margin-right: 10px; /* Liten marginal mellan avatar och användarnamn */
+}
+
+.username {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333; /* Färg på användarnamn */
+}
+

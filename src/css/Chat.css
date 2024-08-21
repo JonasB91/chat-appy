@@ -1,4 +1,4 @@
-/* Grundläggande styling för chat-kontainern */
+/* Hela chat-kontainern */
 .chat-container {
     display: flex;
     flex-direction: column;
@@ -18,25 +18,25 @@
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
 }
 
 /* Individuellt meddelande */
 .message {
     max-width: 60%;
-    padding: 10px 15px;
-    border-radius: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
     position: relative;
-    cursor: pointer; /* Gör att meddelandet ser klickbart ut */
+    cursor: pointer;
 }
 
 /* Egna meddelanden */
 .message.own {
     align-self: flex-end;
+    flex-direction: row-reverse;
     background-color: #007bff;
     color: white;
-    border-bottom-right-radius: 5px;
-    border-top-left-radius: 20px;
 }
 
 /* Andras meddelanden */
@@ -44,29 +44,48 @@
     align-self: flex-start;
     background-color: #e5e5ea;
     color: black;
+}
+
+/* Avatar */
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Meddelandeinnehåll */
+.message-content {
+    background-color: inherit;
+    padding: 10px 15px;
+    border-radius: 20px;
     border-bottom-left-radius: 5px;
     border-top-right-radius: 20px;
+    position: relative;
+}
+
+/* Användarnamn */
+.username {
+    font-weight: bold;
+    margin-bottom: 5px;
 }
 
 /* Pratbubblans triangelform */
-.message.own::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    right: -10px;
-    border-width: 10px 0 0 10px;
-    border-style: solid;
-    border-color: #007bff transparent;
-}
-
-.message.other::after {
+.message-content::after {
     content: '';
     position: absolute;
     bottom: 0;
     left: -10px;
     border-width: 10px 10px 0 0;
     border-style: solid;
-    border-color: #e5e5ea transparent;
+    border-color: inherit transparent;
+}
+
+.message.own .message-content::after {
+    right: -10px;
+    left: auto;
+    border-width: 10px 0 0 10px;
+    border-color: #007bff transparent;
 }
 
 /* Dold delete-knapp */
@@ -97,26 +116,29 @@ form {
     border-top: 1px solid #ccc;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .message-input {
     flex-grow: 1;
-    padding: 10px;
+    padding: 15px;
     font-size: 16px;
     border: 1px solid #ccc;
-    border-radius: 20px;
+    border-radius: 30px;
     margin-right: 10px;
     outline: none;
+    box-sizing: border-box;
 }
 
 .send-btn {
-    padding: 10px 20px;
+    padding: 15px 30px;
     font-size: 16px;
     background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 20px;
+    border-radius: 30px;
     cursor: pointer;
+    flex-shrink: 0;
 }
 
 .send-btn:hover {

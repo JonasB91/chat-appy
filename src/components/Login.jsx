@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthProvider';
+import '../css/Login.css'; 
 
 const Login = () => {
     const { login } = useContext(AuthContext);
@@ -19,8 +20,8 @@ const Login = () => {
     };
 
     return (
-        <div>
-            <form onSubmit={handleLogin}>
+        <div className="login-container">
+            <form onSubmit={handleLogin} className="login-form">
                 <h2>Logga in</h2>
                 <input 
                     type='text' 
@@ -37,9 +38,11 @@ const Login = () => {
                     required
                 />
                 <button type='submit'>Logga in</button>
-                {message && <p>{message}</p>}
+                {message && <p className="message">{message}</p>}
             </form>
-            <p>Har du inget konto? <Link to="/register">Registrera dig här</Link></p>
+            <div className="login-prompt">
+                <p>Har du inget konto? <Link to="/register">Registrera dig här</Link></p>
+            </div>
         </div>
     );
 };

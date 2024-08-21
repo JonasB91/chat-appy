@@ -6,6 +6,8 @@ import Chat from './components/Chat';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthProvider';
 import SideNav from './components/SideNav';
+import UserInfo from './components/UserInfo';
+
 
 function App() {
     return (
@@ -19,6 +21,7 @@ function App() {
                             <ProtectedRoute>
                                 <div className="main-layout">
                                     <SideNav />
+                                    <UserInfo />
                                     <Chat />
                                 </div>
                             </ProtectedRoute>
