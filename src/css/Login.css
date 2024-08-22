@@ -59,14 +59,14 @@
 }
 
 .login-prompt {
-    margin-top: 10px; /* Minskat avstånd till formuläret */
+    margin-top: 10px; 
     text-align: center;
 }
 
 .login-prompt p {
     font-size: 14px;
     color: #333;
-    margin: 0; /* Tar bort extra marginal */
+    margin: 0; 
 }
 
 .login-prompt a {

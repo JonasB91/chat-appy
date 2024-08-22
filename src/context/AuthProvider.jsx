@@ -14,36 +14,24 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const token = sessionStorage.getItem('token');
-        const user = sessionStorage.getItem('user');
-        if (token && user) {
+        
+        if (token) {
+            const decodedJwt = JSON.parse(atob(token.split('.')[1]));
+            console.log("Decoded JWT on load:", decodedJwt);
+
             setAuthState({
                 isAuthenticated: true,
-                user: JSON.parse(user)
-            });
-        }
-    }, []);
-
-    const fetchUserData = async (userId, token) => {
-        try {
-            const response = await fetch(`https://chatify-api.up.railway.app/users/${userId}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
+                user: {
+                    id: decodedJwt.id,
+                    username: decodedJwt.user,
+                    email: decodedJwt.email,
+                    avatar: decodedJwt.avatar,
                 }
             });
-            const data = await response.json();
-            if (response.ok) {
-                sessionStorage.setItem('user', JSON.stringify(data));
-                setAuthState({
-                    isAuthenticated: true,
-                    user: data
-                });
-            } else {
-                console.error('Failed to fetch user data:', data.message);
-            }
-        } catch (error) {
-            console.error('Failed to fetch user data:', error);
+        } else {
+            console.log("No token found in sessionStorage.");
         }
-    };
+    }, []);
 
     const login = async (username, password) => {
         try {
@@ -56,14 +44,23 @@ export const AuthProvider = ({ children }) => {
                 body: JSON.stringify({ username, password, csrfToken })
             });
             const data = await response.json();
+
             if (response.ok) {
                 const decodedJwt = JSON.parse(atob(data.token.split('.')[1]));
-                const userId = decodedJwt.userId; // Här antar vi att userId finns i JWT
+                console.log("Decoded JWT after login:", decodedJwt);
+
                 sessionStorage.setItem('token', data.token);
-                
-                // Hämta fullständig användarinformation
-                await fetchUserData(userId, data.token);
-                
+
+                setAuthState({
+                    isAuthenticated: true,
+                    user: {
+                        id: decodedJwt.id,
+                        username: decodedJwt.user,
+                        email: decodedJwt.email,
+                        avatar: decodedJwt.avatar,
+                    }
+                });
+
                 navigate('/chat');
             } else {
                 alert(data.message || 'Login failed');
@@ -76,7 +73,6 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         sessionStorage.removeItem('token');
-        sessionStorage.removeItem('user');
         setAuthState({ isAuthenticated: false, user: null });
         navigate('/login');
     };

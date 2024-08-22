@@ -29,7 +29,7 @@ const Register = () => {
 
         try {
             const csrfToken = await fetchCsrfToken();
-            const avatarUrl = 'https://i.pravatar.cc/200'; // Always use this default avatar URL
+            const avatarUrl = 'https://i.pravatar.cc/200'; 
             const response = await fetch('https://chatify-api.up.railway.app/auth/register', {
                 method: 'POST',
                 headers: {

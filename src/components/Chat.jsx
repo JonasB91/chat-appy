@@ -69,12 +69,12 @@ const Chat = () => {
                 body: JSON.stringify({
                     text: sanitizedMessage,
                     username: authState.user.username,
-                    avatar: authState.user.avatar // Använd alltid avataren från authState
+                    avatar: authState.user.avatar 
                 })
             });
             if (!response.ok) throw new Error('Failed to send message');
             const newMsg = await response.json();
-            fetchMessages(); // Uppdatera meddelandelistan direkt efter att meddelandet skickats
+            fetchMessages(); 
             setNewMessage('');
         } catch (error) {
             console.error('Error sending message:', error);
